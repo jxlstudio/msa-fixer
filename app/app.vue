@@ -1,25 +1,33 @@
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
+  <div class="min-h-screen p-6 bg-cosmic-void cosmic-grid-bg">
     <div class="mx-auto max-w-5xl space-y-6">
-      <h1 class="text-2xl font-bold">MSA Deck-List Formatting Tool</h1>
-      <p>This tool converts standard deck lists into an expanded format where each card is listed individually (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA when importing decks from sources like Exburst and Egman.</p>
-      <!-- <div class="rounded bg-blue-100 border px-4 py-3">
+      <div class="flex items-center">
+        <NuxtImg
+          src="img/logo-helmet.svg"
+          alt="MSA Logo"
+          width="100"
+        />
+        <h1 class="text-2xl font-bold">MSA Deck-List Formatter</h1>
+      </div>
+      <p>This tool converts standard deck lists into an expanded format where each card is listed individually, rather than stacks (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA.</p>
+      
+      <div class="rounded bg-blue-900 border px-4 py-3">
         <p class="pb-2"><strong>Why does this exist?</strong></p>
-        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-800 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
-      </div> -->
+        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-300 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
+      </div>
 
       <div class="space-y-2">
-        <label for="deck-input" class="block text-xl font-bold text-gray-800">
+        <label for="deck-input" class="block text-xl font-bold">
           Input
         </label>
         <textarea
           id="deck-input"
           v-model="input"
-          class="h-64 w-full rounded border p-3 font-mono text-sm"
+          class="h-64 w-full rounded border p-3 font-mono text-sm bg-gray-950"
           placeholder="Paste deck list here..."
           spellcheck="false"
         />
-        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update.</em></p>
+        <p class="block text-sm font-medium pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update.</em></p>
 
         <div class="flex flex-wrap gap-3">
           <button
@@ -43,30 +51,30 @@
 
 
       <div class="space-y-2">
-        <label for="deck-output" class="block text-xl font-bold text-gray-800">
+        <label for="deck-output" class="block text-xl font-bold">
           Output
         </label>
-        <p class="block text-sm font-medium text-gray-800"><em>This will always output decklists in the Exburst Format as MSA has a limit on its decklist input.</em></p>
+        <p class="block text-sm font-medium"><em>This will always output decklists in the Exburst Format as MSA has a limit on its decklist input.</em></p>
         <textarea
           id="deck-output"
           :value="output"
           readonly
-          class="h-64 w-full rounded border p-3 font-mono text-sm"
+          class="h-64 w-full rounded border p-3 font-mono text-sm bg-gray-950"
           spellcheck="false"
         />
-        <label class="flex items-center gap-2 text-sm font-medium text-gray-800">
+        <label class="flex items-center gap-2 text-sm font-medium">
           <input v-model="shuffleEnabled" type="checkbox" />
-          <strong>Shuffle output</strong> <em>(uses crypto.randomValues() and Fisher–Yates shuffle)</em>
+          <strong>Shuffle output</strong> <em>(uses <span class="font-mono bg-gray-950">crypto.randomValues</span> and Fisher-Yates shuffle)</em>
         </label>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3 pb-6">
         <button
           type="button"
           class="rounded bg-blue-600 hover:bg-blue-800 px-4 py-2 text-white"
           @click="copyOutput"
         >
-          Copy Output
+          Copy Formatted List
         </button>
 
         <div v-if="shuffleEnabled && output !== ''">
@@ -92,10 +100,7 @@
           </div>
         </div> -->
       </div>
-      <div class="rounded bg-blue-100 border px-4 py-3">
-        <p class="pb-2"><strong>Why does this exist?</strong></p>
-        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-800 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
-      </div>
+      <p class="text-xs">Disclaimer: This tool is not affliated with, endorsed or sponsored by MobileSuitArena, Doug Godinho, SOTSU SUNRISE, SOTSU SUNRISE MBS, or BANDAI. Gundam and its associated trademarks and copyrights are owned by SOTSU SUNRISE, SOTSU SUNRISE MBS, BANDAI.</p>
     </div>
 
     <div
@@ -103,7 +108,7 @@
       class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       @click.self="closePreview"
     >
-      <div class="flex max-h-[90vh] w-full max-w-7xl flex-col rounded-lg bg-white shadow-xl">
+      <div class="flex max-h-[90vh] w-full max-w-7xl flex-col rounded-lg bg-gray-900 shadow-xl">
         <div class="flex items-center justify-between border-b px-4 py-3">
           <h2 class="text-lg font-semibold">Preview Shuffle</h2>
 
@@ -140,7 +145,7 @@
                     :alt="`${card.cardNumber} Image`"
                     class="aspect-[5/7] w-full object-cover rounded-xl border"
                     placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
                     loading="lazy"
                   />
                 </div>
@@ -163,7 +168,7 @@
                     :alt="`${card.cardNumber} Image`"
                     class="aspect-[5/7] w-full object-cover rounded-xl border"
                     placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
                     loading="lazy"
                   />
                 </div>
@@ -186,7 +191,7 @@
                     :alt="`${card.cardNumber} Image`"
                     class="aspect-[5/7] w-full object-cover rounded-xl border"
                     placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
                     loading="lazy"
                   />
                 </div>
@@ -210,7 +215,7 @@
 
     <div
       v-if="copyMessage"
-      class="fixed bottom-4 right-4 rounded bg-black px-4 py-2 text-sm text-white shadow"
+      class="fixed bottom-4 right-4 rounded bg-black px-4 py-2 text-xl text-white shadow"
     >
       {{ copyMessage }}
     </div>

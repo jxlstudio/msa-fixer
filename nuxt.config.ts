@@ -3,6 +3,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss','@nuxt/image'],
+  css: ['~/assets/css/cosmic.css'],
+  tailwindcss: {
+    configPath: '~/tailwind.config.ts',
+  },
   app: {
     head: {
       title: 'MSA Deck-List Formatting Tool', // default fallback title

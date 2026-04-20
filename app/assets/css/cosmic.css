@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Exo+2:wght@300;400;500;600;700&display=swap');
+
+/* ─── Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  background-color: #020816;
+  color: #e2f8ff;
+  font-family: 'Exo 2', sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #020816; }
+::-webkit-scrollbar-thumb { background: rgba(0,245,255,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,245,255,0.55); }
+
+/* ─── Clip paths used by components ────────────────────── */
+
+/* Angled top-right corner */
+.clip-corner-tr {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+}
+
+/* Angled both top corners */
+.clip-corners-top {
+  clip-path: polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%, 0 16px);
+}
+
+/* Angled all four corners (octagon-ish) */
+.clip-corners-all {
+  clip-path: polygon(
+    16px 0, calc(100% - 16px) 0,
+    100% 16px, 100% calc(100% - 16px),
+    calc(100% - 16px) 100%, 16px 100%,
+    0 calc(100% - 16px), 0 16px
+  );
+}
+
+/* Small variant */
+.clip-corners-sm {
+  clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px);
+}
+
+/* ─── Grid background ───────────────────────────────────── */
+.cosmic-grid-bg {
+  background-image:
+    linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── Glowing borders via pseudo-element ───────────────── */
+.cosmic-border-glow {
+  position: relative;
+}
+.cosmic-border-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(0,245,255,0.5), rgba(14,165,233,0.2), rgba(124,58,237,0.4));
+  z-index: -1;
+  clip-path: inherit;
+}
+
+/* ─── Scan line overlay ─────────────────────────────────── */
+.cosmic-scanlines::after {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  z-index: 9999;
+}
+
+/* ─── Text utilities ────────────────────────────────────── */
+.text-cosmic-glow {
+  text-shadow: 0 0 20px rgba(0,245,255,0.7), 0 0 40px rgba(0,245,255,0.35);
+}
+.text-display { font-family: 'Orbitron', monospace; }
+.text-mono    { font-family: 'Space Mono', monospace; }
+
+/* ─── Shimmer animation ─────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(0,245,255,0.12), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* ─── Pulse ring ────────────────────────────────────────── */
+@keyframes cosmic-ping {
+  75%, 100% { transform: scale(1.8); opacity: 0; }
+}
+.cosmic-ping { animation: cosmic-ping 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+
+/* ─── Focus ring override ───────────────────────────────── */
+*:focus-visible {
+  outline: 1.5px solid rgba(0,245,255,0.7);
+  outline-offset: 2px;
+}
+
+/* ─── Transitions ───────────────────────────────────────── */
+.cosmic-transition {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
