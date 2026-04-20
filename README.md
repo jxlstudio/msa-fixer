@@ -1,75 +1,51 @@
-# Nuxt Minimal Starter
+# Deck List Expander
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A simple Nuxt web app that converts standard deck lists into an expanded format and optionally shuffles them.
 
-## Setup
+## What It Does
 
-Make sure to install dependencies:
+This tool takes a deck list in the typical format:
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+```
+4x GD01-118
+2x ST04-010
 ```
 
-## Development Server
+…and converts it into an expanded list where each card is listed individually:
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+```
+1x GD01-118
+1x GD01-118
+1x GD01-118
+1x GD01-118
+1x ST04-010
+1x ST04-010
 ```
 
-## Production
+It also includes an optional shuffle feature using the Fisher–Yates algorithm to randomize the final output.
 
-Build the application for production:
+## Why This Exists
 
-```bash
-# npm
-npm run build
+MSA reportedly has issues with its internal shuffling. Players have found that importing *expanded* deck lists (such as those from Exburst and Egman) results in better randomized opening hands and draws.
 
-# pnpm
-pnpm build
+Manually expanding deck lists is tedious and error-prone. This tool automates that process and adds optional pre-shuffling to further improve randomness.
 
-# yarn
-yarn build
+## Features
 
-# bun
-bun run build
-```
+* Converts `Nx CARD` into repeated `1x CARD` lines
+* Ignores comments (e.g., `// Main Deck`)
+* Optional Fisher–Yates shuffle
+* Browser-based (no setup required once deployed)
 
-Locally preview production build:
+## Tech Stack
 
-```bash
-# npm
-npm run preview
+* Nuxt 3
+* Vue 3
+* Web Crypto API (`crypto.getRandomValues`) for secure randomness
 
-# pnpm
-pnpm preview
+## Usage
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1. Paste your deck list into the input field
+2. Enable shuffle (optional)
+3. Copy the generated output
+4. Import into MSA
