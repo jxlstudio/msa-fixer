@@ -19,7 +19,7 @@
           placeholder="Paste deck list here..."
           spellcheck="false"
         />
-        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b></em></p>
+        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b></em> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update this app.</p>
 
         <div class="flex flex-wrap gap-3">
           <button
@@ -274,7 +274,10 @@ function parseDeckList(text: string): ParsedCard[] {
     const withX = line.match(/^(\d+)x\s+([A-Za-z0-9-]+)(?:\s+(.*))?$/i)
     if (withX) {
       const qty = Number(withX[1])
-      const code = withX[2]?.trim()
+      let code = withX[2]?.trim()
+
+      // remove -ALT variants (e.g. GD01-118-ALT1 → GD01-118)
+      code = code?.replace(/-[A-Z]+\d*$/i, '')
       const name = withX[3]?.trim()
 
       if (!Number.isFinite(qty) || qty <= 0 || !code) continue
