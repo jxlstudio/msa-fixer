@@ -24,6 +24,7 @@
         <div class="flex flex-wrap gap-3">
           <button
             type="button"
+            v-if="input === ''"
             class="rounded border px-4 py-2"
             @click="loadSample"
           >
@@ -68,7 +69,7 @@
           Copy Output
         </button>
 
-        <div v-if="shuffleEnabled">
+        <div v-if="shuffleEnabled && output !== ''">
           <button
             type="button"
             class="rounded border text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800 px-4 py-2"
@@ -78,7 +79,7 @@
           </button>
         </div>
 
-        <div v-else class="flex flex-wrap items-center gap-3">
+        <!-- <div v-else class="flex flex-wrap items-center gap-3">
           <button
             type="button"
             class="rounded border text-gray-600 px-4 hover:cursor-help py-2"
@@ -89,7 +90,7 @@
           <div class="text-sm text-gray-600">
             <em>(Enable shuffle to preview)</em>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="rounded bg-blue-100 border px-4 py-3">
         <p class="pb-2"><strong>Why does this exist?</strong></p>
