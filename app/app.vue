@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="mx-auto max-w-5xl space-y-6 relative size-90 [--color-frame-1-stroke:var(--color-primary)]/50 [--color-frame-1-fill:var(--color-primary)]/20 [--color-frame-2-stroke:var(--color-accent)] [--color-frame-2-fill:var(--color-accent)]/20 [--color-frame-3-stroke:var(--color-accent)] [--color-frame-3-fill:var(--color-accent)]/20 [--color-frame-4-stroke:var(--color-accent)] [--color-frame-4-fill:var(--color-accent)]/20 [--color-frame-5-stroke:var(--color-primary)]/23 [--color-frame-5-fill:transparent]">
+    <div class="mx-auto max-w-5xl space-y-6">
       <h1 class="text-2xl font-bold">MSA Deck-List Formatting Tool</h1>
       <p>This tool converts standard deck lists into an expanded format where each card is listed individually (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA when importing decks from sources like Exburst and Egman.</p>
       <!-- <div class="rounded bg-blue-100 border px-4 py-3">
