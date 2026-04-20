@@ -19,7 +19,7 @@
           placeholder="Paste deck list here..."
           spellcheck="false"
         />
-        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update this app.</em></p>
+        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update.</em></p>
 
         <div class="flex flex-wrap gap-3">
           <button
@@ -435,4 +435,15 @@ function clearAll() {
   isPreviewOpen.value = false
   previewDeck.value = []
 }
+
+// SEO and meta tags
+useHead({
+  title: 'MSA Deck-List Formatting Tool',
+  meta: [
+      {
+        name: 'description', 
+        content: 'This tool converts standard deck lists into an expanded format where each card is listed individually (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA when importing decks from sources like Exburst and Egman.'
+      },
+    ]
+})
 </script>
