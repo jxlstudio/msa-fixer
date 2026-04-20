@@ -45,6 +45,7 @@
         <label for="deck-output" class="block text-xl font-bold text-gray-800">
           Output
         </label>
+        <p class="block text-sm font-medium text-gray-800"><em>This will always output decklists in the Exburst Format as MSA has a limit on its decklist input.</em></p>
         <textarea
           id="deck-output"
           :value="output"
@@ -240,8 +241,6 @@ const SAMPLE_INPUT = `// Main Deck
 type ParsedCard = {
   qty: number
   code: string
-  name?: string
-  format: 'with-x' | 'without-x'
 }
 
 type PreviewCard = {
@@ -276,25 +275,24 @@ function parseDeckList(text: string): ParsedCard[] {
       const qty = Number(withX[1])
       let code = withX[2]?.trim()
 
-      // remove -ALT variants (e.g. GD01-118-ALT1 → GD01-118)
       code = code?.replace(/-[A-Z]+\d*$/i, '')
-      const name = withX[3]?.trim()
 
       if (!Number.isFinite(qty) || qty <= 0 || !code) continue
 
-      parsed.push({ qty, code, name, format: 'with-x' })
+      parsed.push({ qty, code })
       continue
     }
 
     const withoutX = line.match(/^(\d+)\s+([A-Za-z0-9-]+)(?:\s+(.*))?$/i)
     if (withoutX) {
       const qty = Number(withoutX[1])
-      const code = withoutX[2]?.trim()
-      const name = withoutX[3]?.trim()
+      let code = withoutX[2]?.trim()
+
+      code = code?.replace(/-[A-Z]+\d*$/i, '')
 
       if (!Number.isFinite(qty) || qty <= 0 || !code) continue
 
-      parsed.push({ qty, code, name, format: 'without-x' })
+      parsed.push({ qty, code })
     }
   }
 
@@ -306,11 +304,7 @@ function expandDeck(cards: ParsedCard[]): string[] {
 
   for (const card of cards) {
     for (let i = 0; i < card.qty; i += 1) {
-      if (card.format === 'with-x') {
-        result.push(`1x ${card.code}`)
-      } else {
-        result.push(card.name ? `1 ${card.code} ${card.name}` : `1 ${card.code}`)
-      }
+      result.push(`1x ${card.code}`)
     }
   }
 
