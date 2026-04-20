@@ -1,12 +1,12 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="mx-auto max-w-5xl space-y-6">
-      <h1 class="text-2xl font-bold">MSA Deck List Formatting Tool</h1>
-      <p>This tool converts standard deck lists into an expanded format where each card is listed individually (e.g., 4x becomes four 1x entries). This format has been reported by players to improve shuffle randomization in MSA when importing decks from sources like Exburst and Egman.</p>
-      <div class="rounded bg-blue-100 border px-4 py-3">
+    <div class="mx-auto max-w-5xl space-y-6 relative size-90 [--color-frame-1-stroke:var(--color-primary)]/50 [--color-frame-1-fill:var(--color-primary)]/20 [--color-frame-2-stroke:var(--color-accent)] [--color-frame-2-fill:var(--color-accent)]/20 [--color-frame-3-stroke:var(--color-accent)] [--color-frame-3-fill:var(--color-accent)]/20 [--color-frame-4-stroke:var(--color-accent)] [--color-frame-4-fill:var(--color-accent)]/20 [--color-frame-5-stroke:var(--color-primary)]/23 [--color-frame-5-fill:transparent]">
+      <h1 class="text-2xl font-bold">MSA Deck-List Formatting Tool</h1>
+      <p>This tool converts standard deck lists into an expanded format where each card is listed individually (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA when importing decks from sources like Exburst and Egman.</p>
+      <!-- <div class="rounded bg-blue-100 border px-4 py-3">
         <p class="pb-2"><strong>Why does this exist?</strong></p>
-        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-800 hover:text-blue-500">Mobile Suit Arena's</NuxtLink> built-in shuffling is believed to have inconsistencies, and manually expanding deck lists has become a common workaround to achieve more reliable opening hands and draws. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
-      </div>
+        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-800 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
+      </div> -->
 
       <div class="space-y-2">
         <label for="deck-input" class="block text-xl font-bold text-gray-800">
@@ -19,17 +19,9 @@
           placeholder="Paste deck list here..."
           spellcheck="false"
         />
-        <p class="block text-sm font-medium text-gray-800 pb-4"><em>(Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". Make sure to exclude sideboards.)</em></p>
+        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b></em></p>
 
         <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            class="rounded border text-red-500 border-red-500 px-4 py-2"
-            @click="clearAll"
-          >
-            Clear List
-          </button>
-
           <button
             type="button"
             class="rounded border px-4 py-2"
@@ -37,13 +29,17 @@
           >
             Load Sample List
           </button>
+
+          <button
+            type="button"
+            class="rounded border text-red-500 border-red-500 hover:text-red-800 hover:border-red-800 px-4 py-2"
+            @click="clearAll"
+          >
+            Clear List
+          </button>
         </div>
       </div>
 
-      <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-        <input v-model="shuffleEnabled" type="checkbox" />
-        <strong>Shuffle output</strong> <em>(uses crypto.randomValues() and Fisher–Yates shuffle)</em>
-      </label>
 
       <div class="space-y-2">
         <label for="deck-output" class="block text-xl font-bold text-gray-800">
@@ -56,25 +52,47 @@
           class="h-64 w-full rounded border p-3 font-mono text-sm"
           spellcheck="false"
         />
+        <label class="flex items-center gap-2 text-sm font-medium text-gray-800">
+          <input v-model="shuffleEnabled" type="checkbox" />
+          <strong>Shuffle output</strong> <em>(uses crypto.randomValues() and Fisher–Yates shuffle)</em>
+        </label>
       </div>
 
-      <div class="flex flex-wrap gap-3">
+      <div class="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          class="rounded bg-blue-600 px-4 py-2 text-white"
+          class="rounded bg-blue-600 hover:bg-blue-800 px-4 py-2 text-white"
           @click="copyOutput"
         >
           Copy Output
         </button>
 
-        <button
-          type="button"
-          class="rounded border px-4 py-2"
-          v-if="shuffleEnabled"
-          @click="openPreview"
-        >
-          Preview Shuffle
-        </button>
+        <div v-if="shuffleEnabled">
+          <button
+            type="button"
+            class="rounded border text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800 px-4 py-2"
+            @click="openPreview"
+          >
+            Preview Shuffle
+          </button>
+        </div>
+
+        <div v-else class="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            class="rounded border text-gray-600 px-4 hover:cursor-help py-2"
+            :disabled="true"
+          >
+            Preview Shuffle
+          </button>
+          <div class="text-sm text-gray-600">
+            <em>(Enable shuffle to preview)</em>
+          </div>
+        </div>
+      </div>
+      <div class="rounded bg-blue-100 border px-4 py-3">
+        <p class="pb-2"><strong>Why does this exist?</strong></p>
+        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-800 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
       </div>
     </div>
 
@@ -88,14 +106,6 @@
           <h2 class="text-lg font-semibold">Preview Shuffle</h2>
 
           <div class="flex gap-2">
-            <!-- <button
-              type="button"
-              class="rounded bg-blue-500 text-white uppercase font-bold border px-3 py-1 text-sm"
-              @click="reshufflePreview"
-            >
-              Reshuffle
-            </button> -->
-
             <button
               type="button"
               class="px-3 py-1 text-sm"
@@ -114,7 +124,7 @@
           <template v-else>
             <section class="space-y-3">
               <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold">First Hand</h3>
+                <h3 class="text-base font-semibold">Starting Hand</h3>
                 <span class="text-sm text-gray-500">{{ firstHandCards.length }} cards</span>
               </div>
               <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
@@ -123,23 +133,21 @@
                   :key="`first-${card.cardNumber}-${index}`"
                   class="overflow-hidden"
                 >
-                  <img
+                  <NuxtImg
                     :src="card.imageUrl"
-                    :alt="card.displayLine"
-                    class="aspect-[5/7] w-full object-cover"
+                    :alt="`${card.cardNumber} Image`"
+                    class="aspect-[5/7] w-full object-cover rounded-xl border"
+                    placeholder
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
                     loading="lazy"
                   />
-                  <!-- <div class="space-y-1 p-2">
-                    <p class="break-all font-mono text-xs text-gray-700">{{ card.cardNumber }}</p>
-                    <p class="line-clamp-2 text-xs text-gray-500">{{ card.displayLine }}</p>
-                  </div> -->
                 </div>
               </div>
             </section>
 
             <section class="space-y-3">
               <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold">Mulligan Hand</h3>
+                <h3 class="text-base font-semibold">Mulligan Hand / First Draws</h3>
                 <span class="text-sm text-gray-500">{{ mulliganHandCards.length }} cards</span>
               </div>
               <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
@@ -148,16 +156,14 @@
                   :key="`mulligan-${card.cardNumber}-${index}`"
                   class="overflow-hidden"
                 >
-                  <img
+                  <NuxtImg
                     :src="card.imageUrl"
-                    :alt="card.displayLine"
-                    class="aspect-[5/7] w-full object-cover"
+                    :alt="`${card.cardNumber} Image`"
+                    class="aspect-[5/7] w-full object-cover rounded-xl border"
+                    placeholder
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
                     loading="lazy"
                   />
-                  <!-- <div class="space-y-1 p-2">
-                    <p class="break-all font-mono text-xs text-gray-700">{{ card.cardNumber }}</p>
-                    <p class="line-clamp-2 text-xs text-gray-500">{{ card.displayLine }}</p>
-                  </div> -->
                 </div>
               </div>
             </section>
@@ -167,22 +173,20 @@
                 <h3 class="text-base font-semibold">Remaining Deck</h3>
                 <span class="text-sm text-gray-500">{{ remainingDeckCards.length }} cards</span>
               </div>
-              <div class="grid grid-cols-3 gap-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8">
+              <div class="grid grid-cols-3 gap-1 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
                 <div
                   v-for="(card, index) in remainingDeckCards"
                   :key="`remaining-${card.cardNumber}-${index}`"
                   class="overflow-hidden"
                 >
-                  <img
+                  <NuxtImg
                     :src="card.imageUrl"
-                    :alt="card.displayLine"
-                    class="aspect-[5/7] w-full object-cover"
+                    :alt="`${card.cardNumber} Image`"
+                    class="aspect-[5/7] w-full object-cover rounded-xl border"
+                    placeholder
+                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-200 text-center font-bold"
                     loading="lazy"
                   />
-                  <!-- <div class="space-y-1 p-2">
-                    <p class="break-all font-mono text-xs text-gray-700">{{ card.cardNumber }}</p>
-                    <p class="line-clamp-2 text-xs text-gray-500">{{ card.displayLine }}</p>
-                  </div> -->
                 </div>
               </div>
             </section>
@@ -212,7 +216,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+// import { computed, onMounted, ref, watch } from 'vue'
 
 const SAMPLE_INPUT = `// Main Deck
 4x GD01-118
@@ -246,7 +250,7 @@ type PreviewCard = {
   displayLine: string
 }
 
-const input = ref(SAMPLE_INPUT)
+const input = ref('')
 const shuffleEnabled = ref(false)
 const isMounted = ref(false)
 const isPreviewOpen = ref(false)
@@ -270,7 +274,7 @@ function parseDeckList(text: string): ParsedCard[] {
     const withX = line.match(/^(\d+)x\s+([A-Za-z0-9-]+)(?:\s+(.*))?$/i)
     if (withX) {
       const qty = Number(withX[1])
-      const code = withX[2].trim()
+      const code = withX[2]?.trim()
       const name = withX[3]?.trim()
 
       if (!Number.isFinite(qty) || qty <= 0 || !code) continue
@@ -282,7 +286,7 @@ function parseDeckList(text: string): ParsedCard[] {
     const withoutX = line.match(/^(\d+)\s+([A-Za-z0-9-]+)(?:\s+(.*))?$/i)
     if (withoutX) {
       const qty = Number(withoutX[1])
-      const code = withoutX[2].trim()
+      const code = withoutX[2]?.trim()
       const name = withoutX[3]?.trim()
 
       if (!Number.isFinite(qty) || qty <= 0 || !code) continue
@@ -324,7 +328,7 @@ function cryptoRandomInt(maxExclusive: number): number {
 
   while (true) {
     cryptoObj.getRandomValues(buffer)
-    const value = buffer[0]
+    const value = buffer[0] ?? 0
     if (value < maxUnbiased) {
       return value % maxExclusive
     }
@@ -354,7 +358,7 @@ const output = computed(() => outputLines.value.join('\n'))
 
 function extractCardNumber(line: string): string | null {
   const match = line.match(/^(?:1x|1)\s+([A-Za-z0-9-]+)/i)
-  return match ? match[1] : null
+  return match ? (match[1] ?? null) : null
 }
 
 const previewCards = computed<PreviewCard[]>(() => {
