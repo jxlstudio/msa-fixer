@@ -19,7 +19,7 @@
           placeholder="Paste deck list here..."
           spellcheck="false"
         />
-        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b></em> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update this app.</p>
+        <p class="block text-sm font-medium text-gray-800 pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update this app.</em></p>
 
         <div class="flex flex-wrap gap-3">
           <button
