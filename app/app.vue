@@ -5,217 +5,264 @@
         <NuxtImg
           src="img/logo-helmet.svg"
           alt="MSA Logo"
-          width="100"
+          width="70"
         />
         <h1 class="text-2xl font-bold">MSA Deck-List Formatter</h1>
       </div>
       <p>This tool converts standard deck lists into an expanded format where each card is listed individually, rather than stacks (example: "4x ST01-001" becomes four lines of "1x ST01-001"). This format has been reported by players to improve shuffle randomization in MSA.</p>
       
-      <div class="rounded bg-blue-900 border px-4 py-3">
-        <p class="pb-2"><strong>Why does this exist?</strong></p>
-        <p><NuxtLink :to="'https://mobilesuitarena.com/'" class="text-blue-300 hover:text-blue-500">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
-      </div>
-
-      <div class="space-y-2">
-        <label for="deck-input" class="block text-xl font-bold">
-          Input
-        </label>
-        <textarea
-          id="deck-input"
-          v-model="input"
-          class="h-64 w-full rounded border p-3 font-mono text-sm bg-gray-950"
-          placeholder="Paste deck list here..."
-          spellcheck="false"
-        />
-        <p class="block text-sm font-medium pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update.</em></p>
-
-        <div class="flex flex-wrap gap-3">
-          <button
-            type="button"
-            v-if="input === ''"
-            class="rounded border px-4 py-2"
-            @click="loadSample"
-          >
-            Load Sample List
-          </button>
-
-          <button
-            type="button"
-            class="rounded border text-red-500 border-red-500 hover:text-red-800 hover:border-red-800 px-4 py-2"
-            @click="clearAll"
-          >
-            Clear List
-          </button>
+      <!-- <div class="bg-blue-900/50 border px-4 py-3"> -->
+      <CyberFrame
+        variant="blue"
+        padding="24px"
+        cornerInset="20px"
+        bevelSize="10px"
+        rightCut="20px"
+        bottomLeftCut="10px"
+        shadowOffset="4px"
+        tone="glass"
+      >
+        <div>
+          <p class="pb-2"><strong>Why does this exist?</strong></p>
+          <p class="text-sm"><NuxtLink :to="'https://mobilesuitarena.com/'" class="hover:text-blue-300 font-bold">Mobile Suit Arena</NuxtLink> is a great tool for testing and practicing Gundam TCG decks, but its built-in shuffling is reported to have issues with randomization, and some users have found that manually expanding deck-lists to be a workaround to achieve better randomization. This tool automates that process and also provides an optional pre-shuffle using a Fisher–Yates algorithm for additional randomization.</p>
         </div>
-      </div>
+      </CyberFrame>
+      <!-- </div> -->
 
+      <!-- <div style="display: flex; gap: 8px;">
+        <CyberButton label="Save" variant="emerald" tag="01" />
+        <CyberButton label="Delete" variant="red" tag="02" />
+        <CyberButton label="Edit" variant="blue" tag="03" :active="true" />
+        <CyberButton label="Warn" variant="amber" tag="04" />
+        <CyberButton label="Ghost" variant="zinc" tag="05" />
+      </div> -->
 
-      <div class="space-y-2">
-        <label for="deck-output" class="block text-xl font-bold">
-          Output
-        </label>
-        <p class="block text-sm font-medium"><em>This will always output decklists in the Exburst Format as MSA has a limit on its decklist input.</em></p>
-        <textarea
-          id="deck-output"
-          :value="output"
-          readonly
-          class="h-64 w-full rounded border p-3 font-mono text-sm bg-gray-950"
-          spellcheck="false"
-        />
-        <label class="flex items-center gap-2 text-sm font-medium">
-          <input v-model="shuffleEnabled" type="checkbox" />
-          <strong>Shuffle output</strong> <em>(uses <span class="font-mono bg-gray-950">crypto.randomValues</span> and Fisher-Yates shuffle)</em>
-        </label>
-      </div>
+      <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div class="space-y-2">
+          <!-- <label for="deck-input" class="block text-xl font-bold">
+            Input
+          </label>
+          <textarea
+            id="deck-input"
+            v-model="input"
+            class="h-64 w-full border p-3 font-mono text-sm bg-black/70"
+            placeholder="Paste deck list here..."
+            spellcheck="false"
+          /> -->
+          <!-- <div class="pb-4"> -->
+            <CyberTextarea
+              v-model="input"
+              label="Input"
+              helper="Works with Exburst & Egman formats. Make sure to exclude sideboards. This formatter removes Alt-Arts (ex: -ALT1) from card numbers."
+              variant="black"
+              tone="glass"
+              placeholder="Paste deck list here..."
+              cornerInset="20px"
+              bevelSize="10px"
+              rightCut="20px"
+              bottomLeftCut="10px"
+              shadowOffset="4px"
+            />
+          <!-- </div> -->
+          <!-- <p class="block text-sm font-medium pb-4"><em>Works with Exburst and Egman formats. Ignores empty lines and lines starting with "//". <b>Make sure to exclude sideboards.</b> <br/> Note: This formatter does remove Alt-Arts (ex: -ALT1) from card numbers to help keep it simple to update.</em></p> -->
 
-      <div class="flex flex-wrap items-center gap-3 pb-6">
-        <button
-          type="button"
-          class="rounded bg-blue-600 hover:bg-blue-800 px-4 py-2 text-white"
-          @click="copyOutput"
-        >
-          Copy Formatted List
-        </button>
-
-        <div v-if="shuffleEnabled && output !== ''">
-          <button
-            type="button"
-            class="rounded border text-blue-600 border-blue-600 hover:text-blue-800 hover:border-blue-800 px-4 py-2"
-            @click="openPreview"
-          >
-            Preview Shuffle
-          </button>
-        </div>
-
-        <!-- <div v-else class="flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            class="rounded border text-gray-600 px-4 hover:cursor-help py-2"
-            :disabled="true"
-          >
-            Preview Shuffle
-          </button>
-          <div class="text-sm text-gray-600">
-            <em>(Enable shuffle to preview)</em>
+          <div class="flex flex-wrap gap-3">
+            <CyberButton
+              v-if="input === ''"
+              label="Load Sample"
+              variant="zinc"
+              tag="01"
+              :idle-glitch="false"
+              @click="loadSample"
+            />
+            <CyberButton
+              label="Clear List"
+              variant="red"
+              :tag="input === '' ? '02' : '01'"
+              :idle-glitch="false"
+              @click="clearAll"
+            />
           </div>
-        </div> -->
+        </div>
+
+        <div class="space-y-2">
+          
+          <CyberTextarea
+            :value="output"
+            readonly
+            label="Output"
+            helper="This will always output decklists in the Exburst Format as MSA has a limit on its decklist input."
+            variant="black"
+            tone="glass"
+            placeholder="Deck list output will appear here..."
+            spellcheck="false"
+            cornerInset="20px"
+            bevelSize="10px"
+            rightCut="20px"
+            bottomLeftCut="10px"
+            shadowOffset="4px"
+          >
+          <template #header>
+            <CyberToggle
+              v-model="shuffleEnabled"
+              label="Pre-Shuffle Output"
+              variant="emerald"
+              size="24px"
+              :idle-glitch="false"
+            />
+          </template>
+          </CyberTextarea>
+
+          <div class="flex flex-wrap items-center gap-3 pb-6">
+            
+            <CyberButton
+              label="Copy List"
+              variant="blue"
+              tag="01"
+              :idle-glitch="false"
+              @click="copyOutput"
+            />
+
+            <div v-if="shuffleEnabled && output !== ''">
+              <CyberButton
+                label="Preview"
+                variant="emerald"
+                tag="02"
+                :idle-glitch="false"
+                @click="openPreview"
+              />
+            </div>
+
+          </div>
+        </div>
       </div>
       <p class="text-xs">Disclaimer: This tool is not affliated with, endorsed or sponsored by MobileSuitArena, Doug Godinho, SOTSU SUNRISE, SOTSU SUNRISE MBS, or BANDAI. Gundam and its associated trademarks and copyrights are owned by SOTSU SUNRISE, SOTSU SUNRISE MBS, BANDAI.</p>
     </div>
 
     <div
       v-if="isPreviewOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-zinc-950/90 p-4"
       @click.self="closePreview"
     >
-      <div class="flex max-h-[90vh] w-full max-w-7xl flex-col rounded-lg bg-gray-900 shadow-xl">
-        <div class="flex items-center justify-between border-b px-4 py-3">
-          <h2 class="text-lg font-semibold">Preview Shuffle</h2>
+      <CyberFrame
+        variant="blue"
+        padding="24px"
+        cornerInset="20px"
+        bevelSize="10px"
+        rightCut="20px"
+        bottomLeftCut="10px"
+        shadowOffset="4px"
+        tone="glass"
+      >
+        <div class="flex max-h-[90vh] w-full flex-col">
+          <div class="flex items-center justify-between border-b px-4 py-3">
+            <h2 class="text-lg font-semibold uppercase">Preview Shuffle</h2>
 
-          <div class="flex gap-2">
-            <button
-              type="button"
-              class="px-3 py-1 text-sm"
-              @click="closePreview"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
+            <div class="flex gap-2">
+              
+              <CyberButton
+                label="Reshuffle"
+                variant="emerald"
+                tag="01"
+                :idle-glitch="false"
+                @click="reshufflePreview"
+              />
+
+              <button
+                type="button"
+                class="px-3 py-1 text-sm"
+                @click="closePreview"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div class="overflow-y-auto space-y-8 p-4">
-          <div v-if="previewCards.length === 0" class="text-sm text-gray-500">
-            No valid cards found.
+          <div class="overflow-y-auto space-y-8 p-4">
+            <div v-if="previewCards.length === 0" class="text-sm text-gray-500">
+              No valid cards found.
+            </div>
+
+            <template v-else>
+              <section class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-semibold">Starting Hand</h3>
+                  <span class="text-sm text-gray-500">{{ firstHandCards.length }} cards</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
+                  <div
+                    v-for="(card, index) in firstHandCards"
+                    :key="`first-${card.cardNumber}-${index}`"
+                    class="overflow-hidden"
+                  >
+                    <NuxtImg
+                      :src="card.imageUrl"
+                      :alt="`${card.cardNumber} Image`"
+                      class="aspect-[5/7] w-full object-cover rounded-xl border"
+                      placeholder
+                      placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-semibold">Mulligan Hand / First Draws</h3>
+                  <span class="text-sm text-gray-500">{{ mulliganHandCards.length }} cards</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
+                  <div
+                    v-for="(card, index) in mulliganHandCards"
+                    :key="`mulligan-${card.cardNumber}-${index}`"
+                    class="overflow-hidden"
+                  >
+                    <NuxtImg
+                      :src="card.imageUrl"
+                      :alt="`${card.cardNumber} Image`"
+                      class="aspect-[5/7] w-full object-cover rounded-xl border"
+                      placeholder
+                      placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <h3 class="text-base font-semibold">Remaining Deck</h3>
+                  <span class="text-sm text-gray-500">{{ remainingDeckCards.length }} cards</span>
+                </div>
+                <div class="grid grid-cols-3 gap-1 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
+                  <div
+                    v-for="(card, index) in remainingDeckCards"
+                    :key="`remaining-${card.cardNumber}-${index}`"
+                    class="overflow-hidden"
+                  >
+                    <NuxtImg
+                      :src="card.imageUrl"
+                      :alt="`${card.cardNumber} Image`"
+                      class="aspect-[5/7] w-full object-cover rounded-xl border"
+                      placeholder
+                      placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </section>
+            </template>
           </div>
 
-          <template v-else>
-            <section class="space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold">Starting Hand</h3>
-                <span class="text-sm text-gray-500">{{ firstHandCards.length }} cards</span>
-              </div>
-              <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
-                <div
-                  v-for="(card, index) in firstHandCards"
-                  :key="`first-${card.cardNumber}-${index}`"
-                  class="overflow-hidden"
-                >
-                  <NuxtImg
-                    :src="card.imageUrl"
-                    :alt="`${card.cardNumber} Image`"
-                    class="aspect-[5/7] w-full object-cover rounded-xl border"
-                    placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            </section>
 
-            <section class="space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold">Mulligan Hand / First Draws</h3>
-                <span class="text-sm text-gray-500">{{ mulliganHandCards.length }} cards</span>
-              </div>
-              <div class="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-5">
-                <div
-                  v-for="(card, index) in mulliganHandCards"
-                  :key="`mulligan-${card.cardNumber}-${index}`"
-                  class="overflow-hidden"
-                >
-                  <NuxtImg
-                    :src="card.imageUrl"
-                    :alt="`${card.cardNumber} Image`"
-                    class="aspect-[5/7] w-full object-cover rounded-xl border"
-                    placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            </section>
-
-            <section class="space-y-3">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-semibold">Remaining Deck</h3>
-                <span class="text-sm text-gray-500">{{ remainingDeckCards.length }} cards</span>
-              </div>
-              <div class="grid grid-cols-3 gap-1 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
-                <div
-                  v-for="(card, index) in remainingDeckCards"
-                  :key="`remaining-${card.cardNumber}-${index}`"
-                  class="overflow-hidden"
-                >
-                  <NuxtImg
-                    :src="card.imageUrl"
-                    :alt="`${card.cardNumber} Image`"
-                    class="aspect-[5/7] w-full object-cover rounded-xl border"
-                    placeholder
-                    placeholder-class="flex rounded-xl border border-gray-900 items-center justify-center bg-gray-800 text-center font-bold"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-            </section>
-          </template>
         </div>
-
-        <div class="text-center px-4 py-3">
-            <button
-              type="button"
-              class="w-full rounded bg-blue-600 text-white uppercase font-bold border px-4 py-3 text-xl"
-              @click="reshufflePreview"
-            >
-              Reshuffle Deck
-            </button>
-        </div>
-
-      </div>
+      </CyberFrame>
     </div>
 
     <div
       v-if="copyMessage"
-      class="fixed bottom-4 right-4 rounded bg-black px-4 py-2 text-xl text-white shadow"
+      class="fixed bottom-4 right-4 bg-black px-4 py-2 text-xl text-white shadow"
     >
       {{ copyMessage }}
     </div>
@@ -223,7 +270,6 @@
 </template>
 
 <script setup lang="ts">
-// import { computed, onMounted, ref, watch } from 'vue'
 
 const SAMPLE_INPUT = `// Main Deck
 4x GD01-118

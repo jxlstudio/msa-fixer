@@ -48,7 +48,7 @@ html, body {
   background-image:
     linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-size: 5px 5px;
 }
 
 /* ─── Glowing borders via pseudo-element ───────────────── */
