@@ -2,20 +2,31 @@
 import { getStore } from '@netlify/blobs'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const path = body?.path || '/'
+  try {
+    const body = await readBody(event)
+    const path = body?.path || '/'
 
-  const store = getStore('pageviews')
-  const key = encodeURIComponent(path)
+    // Keep this INSIDE the handler
+    const store = getStore('pageviews')
 
-  const current = await store.get(key, { type: 'json' }) as { count?: number } | null
-  const count = (current?.count || 0) + 1
+    const key = encodeURIComponent(path)
 
-  await store.setJSON(key, {
-    path,
-    count,
-    updatedAt: new Date().toISOString()
-  })
+    const current = await store.get(key, { type: 'json' }) as { count?: number } | null
+    const count = Number(current?.count || 0) + 1
 
-  return { path, count }
+    await store.setJSON(key, {
+      path,
+      count,
+      updatedAt: new Date().toISOString()
+    })
+
+    return { path, count }
+  } catch (error: any) {
+    console.error('pageview error:', error)
+
+    throw createError({
+      statusCode: 500,
+      statusMessage: error?.message || 'Pageview failed'
+    })
+  }
 })
