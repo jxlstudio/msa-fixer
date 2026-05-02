@@ -6,8 +6,11 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const path = body?.path || '/'
 
-    // Keep this INSIDE the handler
-    const store = getStore('pageviews')
+    const store = getStore({
+      name: 'pageviews',
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_AUTH_TOKEN
+    })
 
     const key = encodeURIComponent(path)
 
@@ -22,7 +25,13 @@ export default defineEventHandler(async (event) => {
 
     return { path, count }
   } catch (error: any) {
-    console.error('pageview error:', error)
+    console.error('pageview error:', {
+      message: error?.message,
+      stack: error?.stack,
+      hasSiteID: !!process.env.NETLIFY_SITE_ID,
+      hasBlobToken: !!process.env.NETLIFY_BLOBS_TOKEN,
+      hasAuthToken: !!process.env.NETLIFY_AUTH_TOKEN
+    })
 
     throw createError({
       statusCode: 500,
