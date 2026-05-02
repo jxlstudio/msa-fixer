@@ -6,13 +6,9 @@ export default defineEventHandler(async (event) => {
     const body = await readBody(event)
     const path = body?.path || '/'
 
-    const store = getStore({
-      name: 'pageviews',
-      siteID: process.env.NETLIFY_SITE_ID,
-      token: process.env.NETLIFY_BLOBS_TOKEN || process.env.NETLIFY_AUTH_TOKEN
-    })
+    const key = encodeURIComponent(path.replace(/^\/+/, '') || 'home')
 
-    const key = encodeURIComponent(path)
+    const store = getStore('pageviews')
 
     const current = await store.get(key, { type: 'json' }) as { count?: number } | null
     const count = Number(current?.count || 0) + 1
@@ -27,10 +23,7 @@ export default defineEventHandler(async (event) => {
   } catch (error: any) {
     console.error('pageview error:', {
       message: error?.message,
-      stack: error?.stack,
-      hasSiteID: !!process.env.NETLIFY_SITE_ID,
-      hasBlobToken: !!process.env.NETLIFY_BLOBS_TOKEN,
-      hasAuthToken: !!process.env.NETLIFY_AUTH_TOKEN
+      stack: error?.stack
     })
 
     throw createError({

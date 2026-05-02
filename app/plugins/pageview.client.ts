@@ -5,10 +5,14 @@ export default defineNuxtPlugin(() => {
   watch(
     () => route.fullPath,
     async (path) => {
-      await $fetch('/api/pageview', {
-        method: 'POST',
-        body: { path }
-      })
+      try {
+        await $fetch('/api/pageview', {
+          method: 'POST',
+          body: { path }
+        })
+      } catch (error) {
+        console.error('pageview client error:', error)
+      }
     },
     { immediate: true }
   )

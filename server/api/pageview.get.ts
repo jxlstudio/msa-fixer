@@ -5,9 +5,9 @@ export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const path = String(query.path || '/')
 
-  const store = getStore('pageviews')
-  const key = encodeURIComponent(path)
+  const key = encodeURIComponent(path.replace(/^\/+/, '') || 'home')
 
+  const store = getStore('pageviews')
   const data = await store.get(key, { type: 'json' })
 
   return data || { path, count: 0 }
