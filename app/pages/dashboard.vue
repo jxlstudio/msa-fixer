@@ -52,23 +52,24 @@ async function login() {
     </form>
 
     <section v-else>
-      <h2>Total views: {{ data?.total ?? 0 }}</h2>
+      <!-- <h2>Total views: {{ data?.total ?? 0 }}</h2> -->
+        <CyberFrame tone="glass">
+        <table style="width: 100%; margin-top: 1rem;">
+          <thead>
+            <tr>
+              <th align="left">Page</th>
+              <th align="right">Views</th>
+            </tr>
+          </thead>
 
-      <table style="width: 100%; margin-top: 1rem;">
-        <thead>
-          <tr>
-            <th align="left">Page</th>
-            <th align="right">Views</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr v-for="page in data?.pages" :key="page.path">
-            <td>{{ page.path }}</td>
-            <td align="right">{{ page.count }}</td>
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr v-for="page in data?.pages" :key="page.path">
+              <td>{{ page.path }}</td>
+              <td align="right">{{ page.count }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </CyberFrame>
     </section>
   </main>
 </template>
